@@ -18,6 +18,7 @@ func _get_input():
 func _input(event):
 	if event.is_action_pressed("jump") && is_grounded: #skok
 		velocity.y = jump_velocity
+	#odpowiada za wysokosc skoku
 	if event.is_action_released("jump"):
 		velocity.y = 8.33
 
