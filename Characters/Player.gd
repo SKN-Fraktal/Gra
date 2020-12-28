@@ -18,6 +18,8 @@ func _get_input():
 func _input(event):
 	if event.is_action_pressed("jump") && is_grounded: #skok
 		velocity.y = jump_velocity
+	if event.is_action_released("jump"):
+		velocity.y = 8.33
 
 func _physics_process(delta):
 	_get_input()
