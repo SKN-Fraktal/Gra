@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Slime_Forest_Idle.png-013c9df37e844bf7b14fe124cad0f789.stex"
+path="res://.import/Shrek.png-efd8b91baed6ffe0446ac8558fb7d356.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Enemies/Slime_Forest_Idle.png"
-dest_files=[ "res://.import/Slime_Forest_Idle.png-013c9df37e844bf7b14fe124cad0f789.stex" ]
+source_file="res://Assets/Enemies/Shrek.png"
+dest_files=[ "res://.import/Shrek.png-efd8b91baed6ffe0446ac8558fb7d356.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2
