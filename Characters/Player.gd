@@ -1,43 +1,57 @@
 extends KinematicBody2D
 
 const UP = Vector2(0, -1)
-const SLOPE_STOP = 40 # odpowiada za zatrzymanie na skosie
+const SLOPE_STOP = 40
 
 var velocity = Vector2()
 var move_speed = 250
 var gravity = 500
-var jump_velocity = -350
-var endofjump = 0
+var jump_velocity = -200
 var is_grounded
 var health = 100
 var lives = 3
+var is_attack = false
+onready var V= get_node("/root/Variables")
 
 func _ready():
 	new_game()
+	connect("PlayerAttack", self, "_on_Player_Attack")
+
+signal PlayerAttack
 
 func _get_input():
-	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right")) #movement w lewo i w prawo
-	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2) #odpowiada za nadanie predkosci, ostatnia wartosc to przyspieszenie
+	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
+	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
 	if move_direction != 0:
-		$AnimatedSprite.scale.x = move_direction #kierunek animacji
+		$AnimatedSprite.scale.x = move_direction
+	if Input.is_action_just_pressed("attack"):
+		is_attack = true
+	else:
+		is_attack = false
 
 func _input(event):
-	if event.is_action_pressed("jump") && is_grounded: #skok
-		endofjump = 0
+	if event.is_action_pressed("jump")&&is_grounded:
 		velocity.y = jump_velocity
-	#odpowiada za wysokosc skoku
-	if event.is_action_released("jump")&& !endofjump:
-		if velocity.y < 0:
-			velocity.y = 8.33
-		endofjump = 1
+	if event.is_action_released("jump"):
+		velocity.y = 8.33
 
 func _physics_process(delta):
 	_get_input()
-	velocity = move_and_slide(velocity, UP, SLOPE_STOP)  #predkosc postaci w grze
-	velocity.y += gravity * delta  #odpowiada za zaprogramowanie grawitacji
+	velocity = move_and_slide(velocity, UP, SLOPE_STOP)
+	velocity.y += gravity * delta
 	is_grounded = is_on_floor()
-	
-	
+	if velocity.x == 0:
+		$AnimatedSprite.animation = "Idle"
+	else:
+		$AnimatedSprite.animation = "Move"
+	if is_attack:
+		var objects = $AnimatedSprite/PlayerAttack.get_overlapping_areas()
+		for object in objects:
+			if object.is_in_group("hurtable"):
+				var Enemy = object.get_parent()
+				Enemy.take_damage()
+
+
 #nie wiem czy to sie tak robi, i jaki byl sygnal by to był ale domyslam sie ze taki, narazie to
 #poczatek, potem jak juz beda sygnaly to bede nad nia pracowal
 func _on_CollisionDetector_body_entered(body):
@@ -57,5 +71,13 @@ func game_lasts():
 		lives -= 1
 	if lives == 0:
 		fail()
-	
 
+#sygnal ataku bronia krotkodystansowa, calosc podpieta jest do sprite, tutaj jest prosto, zeby mob dostal obrazenia
+#trzeba dodac do jego kodu odebranie sygnału i otrzymanie obrazen, specjalnie nie dodaje wartosci z gory
+#tak zeby mozna bylo decydowac indywidualnie dla kazdego moba
+
+func take_damage(): 
+	health -= 50
+
+func _on_player_attack(area):
+	pass
