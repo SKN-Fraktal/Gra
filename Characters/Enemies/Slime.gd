@@ -22,9 +22,10 @@ func _on_DetectionArea_body_entered(body: Node) -> void: # Detekcja playera
 		is_alerted = true # Agresywniejszy movement po spotkaniu gracza
 		$jump_timer.start()
 		speed *= 2
+		$AnimatedSprite.speed_scale = 2
 
 func _physics_process(delta: float) -> void:
-	if is_on_floor():
+	if is_on_floor(): #kontakt z podloga
 		if is_on_wall(): # Zmiana kierunku po zderzeniu ze sciana
 			direction.x = -direction.x
 			motion.x = -motion.x
@@ -33,14 +34,15 @@ func _physics_process(delta: float) -> void:
 		motion.x = direction.x * speed
 		
 		if is_alerted: # Miejsce na dodatkowe zachowania mobkow przy alercie
-			$AnimatedSprite.speed_scale = 2
-			
 			if jump_timer_timeout == true: # Skakanie przy alercie
 				motion.y += jump_height
 				jump_timer_timeout = false
 				
 	elif !is_on_floor():
 		motion.y += gravity
+		
+		if is_on_ceiling():
+			motion.y = 0
 		
 	move_and_slide(motion, UP)
 
