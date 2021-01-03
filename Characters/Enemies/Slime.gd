@@ -5,7 +5,7 @@ var is_alerted = false # Kiedy przeciwnik widzi gracza
 var jump_timer_timeout = false # Kiedy mob jest zaalarmowany i timer pozwala mu zrobic nastepny podskok
 var motion = Vector2.ZERO
 export var jump_height = -100
-export var speed = 25
+export var speed = 1
 export var gravity = 4
 export var direction = Vector2.ZERO # Mozna z poziomu edytora leveli wybrac w ktora strone ma isc mobek
 
@@ -45,6 +45,19 @@ func _physics_process(delta: float) -> void:
 			motion.y = 0
 		
 	move_and_slide(motion, UP)
+	die()
+
 
 func _on_Timer_timeout() -> void: # jump timer
 	jump_timer_timeout = true
+
+func take_damage():
+	health -= 50
+
+func die():
+	if health <= 0:
+		queue_free()
+
+var knockback = Vector2.ZERO
+
+
