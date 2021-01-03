@@ -11,6 +11,8 @@ var is_grounded
 var health = 100
 var lives = 3
 var is_attack = false
+var can_dash = true
+const DASH_SPEED = 1000
 onready var V= get_node("/root/Variables")
 
 func _ready():
@@ -28,6 +30,8 @@ func _get_input():
 		is_attack = true
 	else:
 		is_attack = false
+	if Input.is_action_just_pressed("dash")&&((Input.is_action_pressed("move_left"))||(Input.is_action_pressed("move_right")))&&can_dash == true && is_grounded == true:
+		dash()
 
 func _input(event):
 	if event.is_action_pressed("jump")&&is_grounded:
@@ -44,12 +48,16 @@ func _physics_process(delta):
 		$AnimatedSprite.animation = "Idle"
 	else:
 		$AnimatedSprite.animation = "Move"
+#atak postacina zasadzie nakladajacych sie areas, damage przyjmie tylko grupa 'hurtable'
 	if is_attack:
 		var objects = $AnimatedSprite/PlayerAttack.get_overlapping_areas()
 		for object in objects:
 			if object.is_in_group("hurtable"):
 				var Enemy = object.get_parent()
 				Enemy.take_damage()
+				
+	if move_speed > 250: #reset predkosci dla dasha
+		move_speed -= 50
 
 
 #nie wiem czy to sie tak robi, i jaki byl sygnal by to był ale domyslam sie ze taki, narazie to
@@ -67,7 +75,7 @@ func new_game():
 
 #ta funkcja odpowiada za sprawdzenie czy postac zyje
 func game_lasts():
-	if health <= 100:
+	if health <= 0:
 		lives -= 1
 	if lives == 0:
 		fail()
@@ -75,9 +83,19 @@ func game_lasts():
 #sygnal ataku bronia krotkodystansowa, calosc podpieta jest do sprite, tutaj jest prosto, zeby mob dostal obrazenia
 #trzeba dodac do jego kodu odebranie sygnału i otrzymanie obrazen, specjalnie nie dodaje wartosci z gory
 #tak zeby mozna bylo decydowac indywidualnie dla kazdego moba
-
 func take_damage(): 
 	health -= 50
 
 func _on_player_attack(area):
 	pass
+
+#funkcja dasha i jej timer
+func dash():
+	move_speed = DASH_SPEED
+	can_dash = false
+	$DashCooldown.start()
+
+func _on_DashCooldown_timeout():
+	can_dash = true
+
+
