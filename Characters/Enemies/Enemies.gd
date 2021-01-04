@@ -6,6 +6,6 @@ extends KinematicBody2D
 class_name Enemies
 
 export var detect_radius = 100
-export var health = 100
+export var health = 400
 export var damage = 10
 
