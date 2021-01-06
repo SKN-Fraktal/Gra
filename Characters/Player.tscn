@@ -13,119 +13,119 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 7.69662, 7.75965 )
 
-[sub_resource type="AtlasTexture" id=20]
+[sub_resource type="AtlasTexture" id=2]
 atlas = ExtResource( 9 )
 region = Rect2( 0, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 4 )
-region = Rect2( 0, 0, 16, 16 )
-
 [sub_resource type="AtlasTexture" id=3]
-atlas = ExtResource( 4 )
-region = Rect2( 0, 16, 16, 16 )
+flags = 4
+atlas = ExtResource( 8 )
+region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 4 )
-region = Rect2( 0, 32, 16, 16 )
+flags = 4
+atlas = ExtResource( 8 )
+region = Rect2( 0, 16, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 4 )
-region = Rect2( 0, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 1 )
+flags = 4
+atlas = ExtResource( 8 )
 region = Rect2( 0, 32, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=10]
+[sub_resource type="AtlasTexture" id=6]
 flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 0, 0, 32, 16 )
 
-[sub_resource type="AtlasTexture" id=11]
+[sub_resource type="AtlasTexture" id=7]
 flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 0, 16, 32, 16 )
 
-[sub_resource type="AtlasTexture" id=12]
+[sub_resource type="AtlasTexture" id=8]
 flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 0, 32, 32, 16 )
 
-[sub_resource type="AtlasTexture" id=13]
+[sub_resource type="AtlasTexture" id=9]
 flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 0, 48, 32, 16 )
 
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 48, 16, 16 )
+
 [sub_resource type="AtlasTexture" id=14]
-flags = 4
-atlas = ExtResource( 8 )
+atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=15]
-flags = 4
-atlas = ExtResource( 8 )
+atlas = ExtResource( 1 )
 region = Rect2( 0, 16, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=16]
-flags = 4
-atlas = ExtResource( 8 )
+atlas = ExtResource( 1 )
 region = Rect2( 0, 32, 16, 16 )
 
-[sub_resource type="SpriteFrames" id=17]
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=18]
 animations = [ {
-"frames": [ SubResource( 20 ) ],
+"frames": [ SubResource( 2 ) ],
 "loop": true,
 "name": "Nojump",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
 "loop": true,
-"name": "Move",
-"speed": 4.0
+"name": "Block",
+"speed": 10.0
 }, {
 "frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
-"loop": true,
-"name": "Idle",
-"speed": 1.0
-}, {
-"frames": [ ExtResource( 5 ) ],
-"loop": true,
-"name": "Jump",
-"speed": 5.0
+"loop": false,
+"name": "Attack",
+"speed": 50.0
 }, {
 "frames": [ ExtResource( 7 ) ],
 "loop": true,
 "name": "Fall",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
-"loop": false,
-"name": "Attack",
-"speed": 50.0
-}, {
-"frames": [ SubResource( 14 ), SubResource( 15 ), SubResource( 16 ) ],
+"frames": [ ExtResource( 5 ) ],
 "loop": true,
-"name": "Block",
-"speed": 10.0
+"name": "Jump",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
+"loop": true,
+"name": "Move",
+"speed": 4.0
+}, {
+"frames": [ SubResource( 14 ), SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 1.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=18]
+[sub_resource type="RectangleShape2D" id=19]
 extents = Vector2( 6.42067, 3.83215 )
 
-[sub_resource type="RectangleShape2D" id=19]
+[sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 7.08643, 6.72852 )
 
 [node name="Player" type="KinematicBody2D"]
@@ -143,7 +143,7 @@ __meta__ = {
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.197612, 0.0630112 )
 scale = Vector2( 0.988951, 0.977903 )
-frames = SubResource( 17 )
+frames = SubResource( 18 )
 animation = "Nojump"
 playing = true
 
@@ -156,7 +156,7 @@ script = ExtResource( 6 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite/PlayerAttack"]
 position = Vector2( 14.3833, -0.0102068 )
-shape = SubResource( 18 )
+shape = SubResource( 19 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 0, -1 )
@@ -165,10 +165,12 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 
 [node name="CollisionDetector" type="Area2D" parent="."]
+collision_layer = 5
+collision_mask = 5
 
 [node name="Hitbox" type="CollisionShape2D" parent="CollisionDetector"]
 position = Vector2( 0.195744, 0.0325451 )
-shape = SubResource( 19 )
+shape = SubResource( 20 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -176,8 +178,13 @@ __meta__ = {
 [node name="DashCooldown" type="Timer" parent="."]
 wait_time = 4.0
 one_shot = true
+
+[node name="MegaJumpCooldown" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
 [connection signal="frame_changed" from="AnimatedSprite" to="." method="_on_AnimatedSprite_frame_changed"]
 [connection signal="area_entered" from="AnimatedSprite/PlayerAttack" to="." method="_on_player_attack"]
 [connection signal="body_entered" from="CollisionDetector" to="." method="_on_CollisionDetector_body_entered"]
 [connection signal="timeout" from="DashCooldown" to="." method="_on_DashCooldown_timeout"]
+[connection signal="timeout" from="MegaJumpCooldown" to="." method="_MegaJumpCooldown"]

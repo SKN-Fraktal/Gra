@@ -5,7 +5,7 @@ const SLOPE_STOP = 40
 
 var velocity = Vector2()
 var move_speed = 200
-var gravity = 1000
+var gravity = 1200
 var jump_velocity = -300
 var is_grounded
 var health = 100
@@ -17,6 +17,7 @@ var movement_action
 var is_blocking = false
 const DASH_SPEED = 1000
 onready var V= get_node("/root/Variables")
+var MegaJump = true
 
 #Komentarz ogolny co sie dzieje i co potrzeba jeszcze zrobic:
 #Obecnie pracuje nad nastepnymi funkcjami i ulepszeniami
@@ -36,6 +37,22 @@ func _ready():
 
 signal PlayerAttack
 
+#tutaj jest funkcja ktora bedzie wyswietlala ekran porażki, grała jakis tam deathsound etc.
+func fail():
+	pass
+
+#odpowiada za nowa gre
+func new_game():
+	pass
+
+#ta funkcja odpowiada za sprawdzenie czy postac zyje
+func game_lasts():
+	if health <= 0:
+		lives -= 1
+	if lives == 0:
+		fail()
+
+
 func _get_input():
 	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
 	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
@@ -47,8 +64,8 @@ func _get_input():
 		$AnimatedSprite.offset.x = 8
 	if Input.is_action_just_pressed("dash")&&((Input.is_action_pressed("move_left"))||(Input.is_action_pressed("move_right")))&&can_dash == true && is_grounded == true:
 		dash()
-	
-	
+	#mega_jump
+
 func _input(event):
 	if event.is_action_pressed("jump")&&is_grounded:
 		velocity.y = jump_velocity
@@ -61,8 +78,13 @@ func _input(event):
 		$AnimatedSprite.offset.x = 0
 	if event.is_action_released("Block"):
 		is_blocking = false
-		
-		
+	if event.is_action_pressed("jump_boost")&&MegaJump == true:
+		_MegaJump()
+		is_jumping = true
+	if event.is_action_released("jump_boost"):
+		is_jumping = false
+
+
 func _physics_process(delta):
 	_get_input()
 	velocity = move_and_slide(velocity, UP, SLOPE_STOP)
@@ -86,7 +108,7 @@ func _physics_process(delta):
 		_on_AnimatedSprite_frame_changed()
 		$AnimatedSprite.animation = "Attack"
 		$AnimatedSprite.offset.x = 8
-	elif !is_jumping && velocity.y >17:#ta odpowiada za atak podczas spadku, dzieki niej calosc dziala ale mimo wszystko jest blad animacji
+	elif !is_jumping && velocity.y >21:#ta odpowiada za atak podczas spadku, dzieki niej calosc dziala ale mimo wszystko jest blad animacji
 		_on_AnimatedSprite_frame_changed()
 		$AnimatedSprite.animation = "Fall"
 		$AnimatedSprite.offset.x = 0
@@ -107,44 +129,7 @@ func _physics_process(delta):
 	
 	if move_speed > 250: #reset predkosci dla dasha
 		move_speed -= 50
-
-#nie wiem czy to sie tak robi, i jaki byl sygnal by to był ale domyslam sie ze taki, narazie to
-#poczatek, potem jak juz beda sygnaly to bede nad nia pracowal
-func _on_CollisionDetector_body_entered(body):
-	health -= 10
-
-#tutaj jest funkcja ktora bedzie wyswietlala ekran porażki, grała jakis tam deathsound etc.
-func fail():
-	pass
-
-#odpowiada za nowa gre
-func new_game():
-	pass
-
-#ta funkcja odpowiada za sprawdzenie czy postac zyje
-func game_lasts():
-	if health <= 0:
-		lives -= 1
-	if lives == 0:
-		fail()
-
-#sygnal ataku bronia krotkodystansowa, calosc podpieta jest do sprite, tutaj jest prosto, zeby mob dostal obrazenia
-#trzeba dodac do jego kodu odebranie sygnału i otrzymanie obrazen, specjalnie nie dodaje wartosci z gory
-#tak zeby mozna bylo decydowac indywidualnie dla kazdego moba
-func take_damage(): 
-	health -= 50
-
-func _on_player_attack(area):
-	pass
-
-#funkcja dasha i jej timer
-func dash():
-	move_speed = DASH_SPEED
-	can_dash = false
-	$DashCooldown.start()
-
-func _on_DashCooldown_timeout():
-	can_dash = true
+	
 
 #sygnal konca odtwarzania animacji ataku, poprawa offsetu
 func _on_AnimatedSprite_animation_finished():
@@ -169,3 +154,49 @@ func _on_AnimatedSprite_frame_changed():
 			$AnimatedSprite.animation = "Attack"
 			is_attack = false
 			$AnimatedSprite.offset.x = 0
+			
+			
+#nie wiem czy to sie tak robi, i jaki byl sygnal by to był ale domyslam sie ze taki, narazie to
+#poczatek, potem jak juz beda sygnaly to bede nad nia pracowal
+func _on_CollisionDetector_body_entered(body):
+	_Taking_Damage()
+
+func _Taking_Damage():
+	pass
+#ataki
+
+
+#sygnal ataku bronia krotkodystansowa, calosc podpieta jest do sprite, tutaj jest prosto, zeby mob dostal obrazenia
+#trzeba dodac do jego kodu odebranie sygnału i otrzymanie obrazen, specjalnie nie dodaje wartosci z gory
+#tak zeby mozna bylo decydowac indywidualnie dla kazdego moba
+func take_damage(): 
+	health -= 50
+
+func _on_player_attack(area):
+	pass
+
+#ponizej beda funkcje skilli
+
+#mega jump
+func _MegaJump():
+	velocity.y = jump_velocity - 200
+	MegaJump = false
+	$MegaJumpCooldown.start()
+
+func _MegaJumpCooldown():
+	MegaJump = true
+
+#funkcja dasha i jej timer
+func dash():
+	move_speed = DASH_SPEED
+	can_dash = false
+	$DashCooldown.start()
+
+func _on_DashCooldown_timeout():
+	can_dash = true
+
+
+
+
+
+
