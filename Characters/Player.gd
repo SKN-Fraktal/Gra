@@ -2,6 +2,9 @@ extends KinematicBody2D
 
 const UP = Vector2(0, -1)
 const SLOPE_STOP = 40
+const DASH_SPEED = 1000
+
+onready var V= get_node("/root/Variables")
 
 var velocity = Vector2()
 var move_speed = 200
@@ -10,14 +13,14 @@ var jump_velocity = -300
 var is_grounded
 var health = 100
 var lives = 3
+var movement_action 
 var is_attack = false
 var can_dash = true
 var is_jumping = false
-var movement_action 
 var is_blocking = false
-const DASH_SPEED = 1000
-onready var V= get_node("/root/Variables")
 var MegaJump = true
+var stomp = false
+var can_stomp = true
 
 #Komentarz ogolny co sie dzieje i co potrzeba jeszcze zrobic:
 #Obecnie pracuje nad nastepnymi funkcjami i ulepszeniami
@@ -33,9 +36,7 @@ var MegaJump = true
 
 func _ready():
 	new_game()
-	connect("PlayerAttack", self, "_on_Player_Attack")
 
-signal PlayerAttack
 
 #tutaj jest funkcja ktora bedzie wyswietlala ekran porażki, grała jakis tam deathsound etc.
 func fail():
@@ -64,8 +65,10 @@ func _get_input():
 		$AnimatedSprite.offset.x = 8
 	if Input.is_action_just_pressed("dash")&&((Input.is_action_pressed("move_left"))||(Input.is_action_pressed("move_right")))&&can_dash == true && is_grounded == true:
 		dash()
-	#mega_jump
-
+	#stomp
+	if Input.is_action_just_pressed("stomp"):
+		_Stomp()
+	
 func _input(event):
 	if event.is_action_pressed("jump")&&is_grounded:
 		velocity.y = jump_velocity
@@ -130,6 +133,15 @@ func _physics_process(delta):
 	if move_speed > 250: #reset predkosci dla dasha
 		move_speed -= 50
 	
+	#stomp
+	if stomp && is_grounded:
+		print("test")
+		var objects = $AnimatedSprite/StompArea.get_overlapping_areas()
+		for object in objects:
+			if object.is_in_group("hurtable"):
+				var Enemy = object.get_parent()
+				Enemy.StompDamage()
+		
 
 #sygnal konca odtwarzania animacji ataku, poprawa offsetu
 func _on_AnimatedSprite_animation_finished():
@@ -195,8 +207,17 @@ func dash():
 func _on_DashCooldown_timeout():
 	can_dash = true
 
+func _Stomp():
+	stomp = true
+	$StompCooldown.start()
+	$StompingTime.start()
+	
 
+func StompCooldown():
+	can_stomp = false
 
+func _on_StompArea_area_entered(area):
+	pass
 
-
-
+func _on_StompingTime():
+	stomp = false
