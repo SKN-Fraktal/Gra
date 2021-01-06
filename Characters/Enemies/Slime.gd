@@ -5,9 +5,12 @@ var is_alerted = false # Kiedy przeciwnik widzi gracza
 var jump_timer_timeout = false # Kiedy mob jest zaalarmowany i timer pozwala mu zrobic nastepny podskok
 var motion = Vector2.ZERO
 export var jump_height = -100
-export var speed = 1
+export var speed = 25
 export var gravity = 4
 export var direction = Vector2.ZERO # Mozna z poziomu edytora leveli wybrac w ktora strone ma isc mobek
+var frame = 0
+onready var Player = get_node("/root/Node/Player")
+
 
 func _ready() -> void:
 	randomize() # Losowy seed
@@ -16,7 +19,7 @@ func _ready() -> void:
 		direction.x = randi() % 2 # Losowy kierunek ruchu na starcie
 		if (direction.x == 0):
 			direction.x = -1
-	
+
 func _on_DetectionArea_body_entered(body: Node) -> void: # Detekcja playera
 	if is_alerted == false: 
 		is_alerted = true # Agresywniejszy movement po spotkaniu gracza
@@ -29,7 +32,8 @@ func _physics_process(delta: float) -> void:
 		if is_on_wall(): # Zmiana kierunku po zderzeniu ze sciana
 			direction.x = -direction.x
 			motion.x = -motion.x
-			
+		
+		
 		motion.y = 0 # y = 0 przy kontakcie z podloga
 		motion.x = direction.x * speed
 		
@@ -46,6 +50,7 @@ func _physics_process(delta: float) -> void:
 		
 	move_and_slide(motion, UP)
 	die()
+	
 
 
 func _on_Timer_timeout() -> void: # jump timer
@@ -53,11 +58,29 @@ func _on_Timer_timeout() -> void: # jump timer
 
 func take_damage():
 	health -= 50
+	knockback()
 
 func die():
 	if health <= 0:
 		queue_free()
 
-var knockback = Vector2.ZERO
+func StompDamage():
+	health -= 500
 
-
+func knockback():
+	while frame < 120:
+		if Player.facing_direction == direction.x:
+			if direction.x == 1:
+				position.x -= -direction.x * 0.1
+				position.y -= 0.05
+			else:
+				position.x += direction.x * 0.1
+				position.y -= 0.05
+		elif Player.facing_direction != direction.x:
+			if direction.x == 1:
+				position.x -= direction.x * 0.1
+				position.y -= 0.05
+			else:
+				position.x += -direction.x * 0.1
+				position.y -= 0.05
+		frame += 1

@@ -5,6 +5,7 @@ const SLOPE_STOP = 40
 const DASH_SPEED = 1000
 
 onready var V= get_node("/root/Variables")
+var arrow = preload("res://Objects/Arrow.tscn")
 
 var velocity = Vector2()
 var move_speed = 200
@@ -21,6 +22,11 @@ var is_blocking = false
 var MegaJump = true
 var stomp = false
 var can_stomp = true
+var weapon
+var arrow_speed = 1500
+var move_direction
+var facing_direction = 0
+
 
 #Komentarz ogolny co sie dzieje i co potrzeba jeszcze zrobic:
 #Obecnie pracuje nad nastepnymi funkcjami i ulepszeniami
@@ -36,7 +42,6 @@ var can_stomp = true
 
 func _ready():
 	new_game()
-
 
 #tutaj jest funkcja ktora bedzie wyswietlala ekran porażki, grała jakis tam deathsound etc.
 func fail():
@@ -55,20 +60,34 @@ func game_lasts():
 
 
 func _get_input():
-	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
+	move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
 	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
 	if move_direction != 0:
 		$AnimatedSprite.scale.x = move_direction
-	if Input.is_action_just_pressed("attack"):
-		$AnimatedSprite.animation = "Attack"
-		is_attack = true
-		$AnimatedSprite.offset.x = 8
 	if Input.is_action_just_pressed("dash")&&((Input.is_action_pressed("move_left"))||(Input.is_action_pressed("move_right")))&&can_dash == true && is_grounded == true:
 		dash()
 	#stomp
-	if Input.is_action_just_pressed("stomp"):
+	if Input.is_action_just_pressed("stomp")&&can_stomp:
 		_Stomp()
-	
+	#wybor broni
+	if Input.is_action_just_pressed("weapon_sword"):
+		weapon = "sword"
+	if Input.is_action_just_pressed("weapon_bow"):
+		weapon = "bow"
+	if Input.is_action_just_pressed("attack")&&weapon == "sword":
+		$AnimatedSprite.animation = "Attack"
+		is_attack = true
+		$AnimatedSprite.offset.x = 8
+	if Input.is_action_just_pressed("attack")&&weapon == "bow":
+		var arrow_instance = arrow.instance()
+		var mouse_position = get_global_mouse_position()
+		arrow_instance.rotation = get_global_mouse_position().angle_to_point(mouse_position)
+		arrow_instance.linear_velocity = get_global_position().direction_to(mouse_position)* arrow_instance.speed
+		arrow_instance.position = get_global_position()
+		get_tree().get_root().add_child(arrow_instance)
+		
+		
+
 func _input(event):
 	if event.is_action_pressed("jump")&&is_grounded:
 		velocity.y = jump_velocity
@@ -93,6 +112,7 @@ func _physics_process(delta):
 	velocity = move_and_slide(velocity, UP, SLOPE_STOP)
 	velocity.y += gravity * delta
 	is_grounded = is_on_floor()
+	facing_direction = $AnimatedSprite.scale.x
 	#sekwencja instrukcji poniżej odpowiada za animacje
 	if !is_attack:
 		if velocity.x == 0:
@@ -134,8 +154,9 @@ func _physics_process(delta):
 		move_speed -= 50
 	
 	#stomp
-	if stomp && is_grounded:
+	if stomp && is_grounded && can_stomp:
 		print("test")
+		StompCooldown()
 		var objects = $AnimatedSprite/StompArea.get_overlapping_areas()
 		for object in objects:
 			if object.is_in_group("hurtable"):
@@ -187,8 +208,9 @@ func take_damage():
 func _on_player_attack(area):
 	pass
 
-#ponizej beda funkcje skilli
 
+
+#ponizej beda funkcje skilli
 #mega jump
 func _MegaJump():
 	velocity.y = jump_velocity - 200
@@ -210,8 +232,6 @@ func _on_DashCooldown_timeout():
 func _Stomp():
 	stomp = true
 	$StompCooldown.start()
-	$StompingTime.start()
-	
 
 func StompCooldown():
 	can_stomp = false
@@ -219,5 +239,5 @@ func StompCooldown():
 func _on_StompArea_area_entered(area):
 	pass
 
-func _on_StompingTime():
-	stomp = false
+func _on_StompCooldown():
+	can_stomp = true
