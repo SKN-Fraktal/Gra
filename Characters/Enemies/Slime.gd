@@ -10,6 +10,7 @@ export var gravity = 4
 export var direction = Vector2.ZERO # Mozna z poziomu edytora leveli wybrac w ktora strone ma isc mobek
 var frame = 0
 onready var Player = get_node("/root/Node/Player")
+onready var Globals = get_node("/root/Variables")
 
 
 func _ready() -> void:
@@ -60,6 +61,9 @@ func take_damage():
 	health -= 50
 	knockback()
 
+func bomb_damage():
+	health -= Globals.BombDamage
+
 func die():
 	if health <= 0:
 		queue_free()
@@ -84,3 +88,6 @@ func knockback():
 				position.x += -direction.x * 0.1
 				position.y -= 0.05
 		frame += 1
+
+func _on_Hitbox_body_entered(body):
+	health -= Globals.ArrowDamage
