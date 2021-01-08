@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Assets/Items/Bomb_Exploding.png" type="Texture" id=1]
+[ext_resource path="res://Objects/Bomb.gd" type="Script" id=2]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 6.44764
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 48, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "Bomb_Explode",
+"speed": 5.0
+}, {
+"frames": [ null, SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
+"loop": true,
+"name": "Bomb_Fly",
+"speed": 3.0
+} ]
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 42.1144
+
+[node name="Bomb" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 8
+mode = 2
+gravity_scale = 4.0
+linear_velocity = Vector2( 0, 20000 )
+angular_velocity = 4.0
+angular_damp = 1.0
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 2.57953 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, 0.198425 )
+frames = SubResource( 6 )
+animation = "Bomb_Fly"
+frame = 3
+playing = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 0, 0.561867 )
+shape = SubResource( 7 )
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_BombAnimationFinished"]
